@@ -9,8 +9,19 @@
 | routes are loaded by the RouteServiceProvider within a group which
 | contains the "web" middleware group. Now create something great!
 |
-*/
+
+Route::view('/{path?}', 'home');
 
 Route::get('/', function () {
     return view('home');
 });
+
+
+Route::get( '/{any}', function () {
+    return view('home');
+})->where('any', '.*');
+
+*/
+Route::get('{all?}', function(){
+    return view('home');
+})->where('all', '([A-z\d-\/_.]+)?');

@@ -1,5 +1,6 @@
 require('./bootstrap');
 
+require('../sass/app.scss');
 /**
 require('./bootstrap');
 
@@ -8,4 +9,4 @@ require('./bootstrap');
  * building robust, powerful web applications using React + Laravel.
 
 */
-require('./components/App');
+require('./Components/App');

@@ -51,7 +51,7 @@ class ApiController extends Controller
    }
 
 
-   
+
 
    public function logout(Request $request)
    {
@@ -84,6 +84,20 @@ class ApiController extends Controller
 
        return response()->json(['user' => $user]);
    }
+
+   public function details() //todo
+       {
+           $user = Auth::user();
+           return response()->json(['success' => $user], $this-> successStatus);
+       }
+
+//refresh user token
+   public function refresh()
+    {
+        return response([
+         'status' => 'success'
+        ]);
+    }
 
 
 }
