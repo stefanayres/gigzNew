@@ -63564,9 +63564,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
 class App extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
-  handleLogout() {
-    Auth.logout();
-    this.props.history.replace('/login');
+  constructor() {
+    super();
   }
 
   render() {
@@ -63577,13 +63576,9 @@ class App extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
       path: "/About",
       component: _About__WEBPACK_IMPORTED_MODULE_4__["default"]
-    }), "//", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
+    }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
       path: "/Login",
       component: _Login__WEBPACK_IMPORTED_MODULE_5__["default"]
-    }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
-      exact: true,
-      path: "/Login",
-      render: props => react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Login__WEBPACK_IMPORTED_MODULE_5__["default"], null)
     }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
       component: _Error__WEBPACK_IMPORTED_MODULE_6__["default"]
     }))));
@@ -63617,7 +63612,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 class AuthService {
   // Initializing important variables
   constructor(domain) {
-    this.domain = domain || 'http://localhost:8000/api'; // API server domain
+    this.domain = domain || `http://127.0.0.1:8000/api`; // API server domain
+    //this.user = {username: '', password: ''}
 
     this.fetch = this.fetch.bind(this); // React binding stuff
 
@@ -63668,6 +63664,21 @@ class AuthService {
   getToken() {
     // Retrieves the user token from localStorage
     return localStorage.getItem('id_token');
+  } // todo !!!!!!!!!!!!
+
+
+  getUser() {
+    const token = this.getToken(); //get token from local localStorage
+
+    return this.fetch(`${this.domain}/user/?token=${token}`, {
+      method: 'GET',
+      headers: {
+        'Content-type': 'application/json',
+        'Token': `${token}`
+      }
+    }).then(results => results.json()).then(buildings => this.setState({
+      buildings: buildings
+    }));
   }
 
   logout() {
@@ -63690,7 +63701,7 @@ class AuthService {
     };
 
     if (this.loggedIn()) {
-      headers['Authorization'] = 'Bearer ' + this.getToken();
+      headers['Token'] = this.getToken();
     }
 
     return fetch(url, _objectSpread({
@@ -63760,21 +63771,31 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-const Auth = new _AuthService__WEBPACK_IMPORTED_MODULE_2__["default"]();
 
 class Home extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
+  constructor() {
+    super();
+    this.Auth = new _AuthService__WEBPACK_IMPORTED_MODULE_2__["default"]();
+  }
+
   render() {
+    const test = this.props;
     return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
       className: "App"
     }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
       className: "App-header"
-    }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h2", null, "Welcome ", this.props.user.email)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", {
+    }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h2", null, "Welcome ", this.props.user.username)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", {
       className: "App-intro"
     }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
       type: "button",
       className: "form-submit",
       onClick: this.handleLogout.bind(this)
     }, "Logout"))));
+  }
+
+  handleLogout() {
+    this.Auth.logout();
+    this.props.history.replace('/login');
   }
 
 }
@@ -63822,6 +63843,13 @@ class Login extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     if (this.Auth.loggedIn()) this.props.history.replace('/');
   }
 
+  handleChange(e) {
+    this.setState({
+      [e.target.name]: e.target.value
+    });
+    console.log(e.target.value); //test
+  }
+
   render() {
     return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
       className: "center"
@@ -63842,14 +63870,9 @@ class Login extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
       className: "form-submit",
       value: "SUBMIT",
-      type: "submit"
+      type: "submit",
+      onClick: this.handleFormSubmit
     }))));
-  }
-
-  handleChange(e) {
-    this.setState({
-      [e.target.name]: e.target.value
-    });
   }
 
 }
@@ -63903,7 +63926,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 function withAuth(AuthComponent) {
-  const Auth = new _AuthService__WEBPACK_IMPORTED_MODULE_1__["default"]('http://localhost:8000/api');
+  const Auth = new _AuthService__WEBPACK_IMPORTED_MODULE_1__["default"](`http://127.0.0.1:8000/api`);
   return class AuthWrapped extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     constructor() {
       super();
@@ -63914,16 +63937,17 @@ function withAuth(AuthComponent) {
 
     componentWillMount() {
       if (!Auth.loggedIn()) {
-        this.props.history.replace('/login');
+        this.props.history.replace('/Login');
       } else {
         try {
+          const test = this.props;
           const profile = Auth.getProfile();
           this.setState({
             user: profile
           });
         } catch (err) {
           Auth.logout();
-          this.props.history.replace('/login');
+          this.props.history.replace('/Login');
         }
       }
     }

@@ -26,7 +26,15 @@ class Login extends Component {
     componentWillMount(){
     if(this.Auth.loggedIn())
         this.props.history.replace('/');
+      }
 
+      handleChange(e){
+          this.setState(
+              {
+                  [e.target.name]: e.target.value
+              }
+          )
+          console.log(e.target.value); //test
       }
 
     render() {
@@ -53,19 +61,12 @@ class Login extends Component {
                             className="form-submit"
                             value="SUBMIT"
                             type="submit"
+                            onClick={this.handleFormSubmit}
                         />
                     </form>
                 </div>
             </div>
         );
-    }
-
-    handleChange(e){
-        this.setState(
-            {
-                [e.target.name]: e.target.value
-            }
-        )
     }
 
 }

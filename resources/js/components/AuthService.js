@@ -3,7 +3,8 @@ import decode from 'jwt-decode';
 export default class AuthService {
     // Initializing important variables
     constructor(domain) {
-        this.domain = domain || 'http://localhost:8000/api' // API server domain
+        this.domain = domain || `http://127.0.0.1:8000/api` // API server domain
+        //this.user = {username: '', password: ''}
         this.fetch = this.fetch.bind(this) // React binding stuff
         this.login = this.login.bind(this)
         this.getProfile = this.getProfile.bind(this)
@@ -53,6 +54,27 @@ export default class AuthService {
         return localStorage.getItem('id_token')
     }
 
+
+// todo !!!!!!!!!!!!
+    getUser() {
+        const token = this.getToken(); //get token from local localStorage
+
+
+          return this.fetch(`${this.domain}/user/?token=${token}`, {
+            method: 'GET',
+            headers: {
+                'Content-type': 'application/json',
+                'Token': `${token}`
+              },
+        })
+        .then(results => results.json())
+        .then(buildings => this.setState({ buildings: buildings }))
+      }
+
+
+
+
+
     logout() {
         // Clear user token and profile data from localStorage
         localStorage.removeItem('id_token');
@@ -67,14 +89,14 @@ export default class AuthService {
     fetch(url, options) {
         // performs api calls sending the required authentication headers
         const headers = {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
         }
 
         // Setting Authorization header
         // Authorization: Bearer xxxxxxx.xxxxxxxx.xxxxxx
         if (this.loggedIn()) {
-            headers['Authorization'] = 'Bearer ' + this.getToken()
+            headers['Token'] = this.getToken()
         }
 
         return fetch(url, {

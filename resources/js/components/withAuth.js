@@ -2,8 +2,10 @@ import React, { Component } from 'react';
 import AuthService from './AuthService';
 
 function withAuth(AuthComponent) {
-    const Auth = new AuthService('http://localhost:8000/api');
-    return class AuthWrapped extends Component {
+
+const Auth = new AuthService(`http://127.0.0.1:8000/api`);
+
+return class AuthWrapped extends Component {
 
         constructor() {
               super();
@@ -14,10 +16,11 @@ function withAuth(AuthComponent) {
 
         componentWillMount() {
         if (!Auth.loggedIn()) {
-            this.props.history.replace('/login')
+            this.props.history.replace('/Login')
         }
         else {
             try {
+              const test = this.props;
                 const profile = Auth.getProfile()
                 this.setState({
                     user: profile
@@ -25,7 +28,7 @@ function withAuth(AuthComponent) {
             }
             catch(err){
                 Auth.logout()
-                this.props.history.replace('/login')
+                this.props.history.replace('/Login')
             }
         }
     }
