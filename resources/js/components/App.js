@@ -8,6 +8,7 @@ import About from './About';
 import Login from './Login';
 import Error from './Error';
 import Nav from './Nav';
+import Register from './Register';
 
 class App extends Component {
 
@@ -23,8 +24,9 @@ class App extends Component {
             <Nav />
               <Switch>
                 <Route path='/' exact component={Home} />
-                <Route path='/About' component={About} />
-                <Route path='/Login' component={Login} />
+                <Route path='/About'  component={About} />
+                <Route path='/Login'  component={Login} />
+                <Route path='/Register' component={Register} />
                 <Route component={Error} />
               </Switch>
 

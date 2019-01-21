@@ -24,6 +24,22 @@ export default class AuthService {
         })
     }
 
+    register(username, email, password, role) {
+        // Get a token from api server using the fetch api
+        return this.fetch(`${this.domain}/register`, {
+            method: 'POST',
+            body: JSON.stringify({
+                username,
+                email,
+                password,
+                role
+            })
+        }).then(res => {
+            this.setToken(res.token) // Setting the token in localStorage
+            return Promise.resolve(res);
+        })
+    }
+
     loggedIn() {
         // Checks if there is a saved token and it's still valid
         const token = this.getToken() // GEtting token from localstorage
@@ -60,19 +76,16 @@ export default class AuthService {
         const token = this.getToken(); //get token from local localStorage
 
 
-          return this.fetch(`${this.domain}/user/?token=${token}`, {
+          return this.fetch(`${this.domain}/user`, {
             method: 'GET',
             headers: {
                 'Content-type': 'application/json',
-                'Token': `${token}`
+                'Authorization': `Bearer ${token}`
               },
         })
         .then(results => results.json())
         .then(buildings => this.setState({ buildings: buildings }))
       }
-
-
-
 
 
     logout() {

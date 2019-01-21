@@ -18,16 +18,9 @@ class UserRequest extends Model
      * @var array
      */
     protected $fillable = [
-         'requetsedUser_id', 'location', 'details', 'price', 'requestDate', 'status',
+         'requestingUser_id', 'requetsedUser_id', 'location', 'details', 'price', 'requestDate', 'status',
     ];
 
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
-    protected $hidden = [
-        'requestingUser_id',
-    ];
+    
 
 }

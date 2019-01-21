@@ -63554,6 +63554,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Login__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./Login */ "./resources/js/Components/Login.js");
 /* harmony import */ var _Error__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./Error */ "./resources/js/Components/Error.js");
 /* harmony import */ var _Nav__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./Nav */ "./resources/js/Components/Nav.js");
+/* harmony import */ var _Register__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./Register */ "./resources/js/Components/Register.js");
+
 
 
 
@@ -63579,6 +63581,9 @@ class App extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
       path: "/Login",
       component: _Login__WEBPACK_IMPORTED_MODULE_5__["default"]
+    }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
+      path: "/Register",
+      component: _Register__WEBPACK_IMPORTED_MODULE_8__["default"]
     }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
       component: _Error__WEBPACK_IMPORTED_MODULE_6__["default"]
     }))));
@@ -63636,6 +63641,23 @@ class AuthService {
     });
   }
 
+  register(username, email, password, role) {
+    // Get a token from api server using the fetch api
+    return this.fetch(`${this.domain}/register`, {
+      method: 'POST',
+      body: JSON.stringify({
+        username,
+        email,
+        password,
+        role
+      })
+    }).then(res => {
+      this.setToken(res.token); // Setting the token in localStorage
+
+      return Promise.resolve(res);
+    });
+  }
+
   loggedIn() {
     // Checks if there is a saved token and it's still valid
     const token = this.getToken(); // GEtting token from localstorage
@@ -63670,11 +63692,11 @@ class AuthService {
   getUser() {
     const token = this.getToken(); //get token from local localStorage
 
-    return this.fetch(`${this.domain}/user/?token=${token}`, {
+    return this.fetch(`${this.domain}/user`, {
       method: 'GET',
       headers: {
         'Content-type': 'application/json',
-        'Token': `${token}`
+        'Authorization': `Bearer ${token}`
       }
     }).then(results => results.json()).then(buildings => this.setState({
       buildings: buildings
@@ -63903,10 +63925,141 @@ const Nav = () => {
     to: "/About"
   }, "About"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_1__["NavLink"], {
     to: "/Login"
-  }, "Log In"));
+  }, "Log In"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_1__["NavLink"], {
+    to: "/Register"
+  }, "Sign up"));
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (Nav);
+
+/***/ }),
+
+/***/ "./resources/js/Components/Register.js":
+/*!*********************************************!*\
+  !*** ./resources/js/Components/Register.js ***!
+  \*********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _AuthService__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AuthService */ "./resources/js/Components/AuthService.js");
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+
+
+__webpack_require__(/*! ../bootstrap */ "./resources/js/bootstrap.js");
+
+
+
+class Register extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
+  constructor() {
+    super();
+    this.handleChange = this.handleChange.bind(this);
+    this.handleFormSubmit = this.handleFormSubmit.bind(this);
+    this.Auth = new _AuthService__WEBPACK_IMPORTED_MODULE_1__["default"]();
+  }
+
+  register(username, email, password, role) {
+    // Get a token from api server using the fetch api
+    return this.fetch(`${this.domain}/register`, {
+      method: 'POST',
+      body: JSON.stringify({
+        username,
+        email,
+        password,
+        role
+      })
+    }).then(res => {
+      this.setToken(res.token); // Setting the token in localStorage
+
+      return Promise.resolve(res);
+    });
+  }
+
+  handleFormSubmit(e) {
+    e.preventDefault();
+    this.Auth.register(this.state.username, this.state.email, this.state.password, this.state.role).then(res => {
+      this.props.history.replace('/');
+    }).catch(err => {
+      alert(err);
+    });
+  }
+
+  componentWillMount() {
+    if (this.Auth.loggedIn()) this.props.history.replace('/');
+  }
+
+  handleChange(e) {
+    this.setState({
+      [e.target.name]: e.target.value
+    });
+    console.log(e.target.value); //test
+  }
+
+  handle(event) {
+    console.log(event.target.value);
+    this.setState(_objectSpread({}, this.state, {
+      selectedValue: event.target.value
+    }));
+  }
+
+  render() {
+    return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      className: "center"
+    }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      className: "card"
+    }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h1", null, "Login"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("form", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+      className: "form-item",
+      placeholder: "Username goes here...",
+      name: "username",
+      type: "text",
+      onChange: this.handleChange
+    }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+      className: "form-item",
+      placeholder: "Email goes here...",
+      name: "email",
+      type: "text",
+      onChange: this.handleChange
+    }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+      className: "form-item",
+      placeholder: "Password goes here...",
+      name: "password",
+      type: "password",
+      onChange: this.handleChange
+    }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      className: "btn-group",
+      "data-toggle": "buttons"
+    }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
+      className: "btn btn-secondary active"
+    }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+      type: "radio",
+      name: "options",
+      value: "0",
+      defaultChecked: true,
+      onChange: this.handle
+    }), " Band"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
+      className: "btn btn-secondary"
+    }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+      type: "radio",
+      name: "options",
+      value: "1",
+      onChange: this.handle
+    }), " Venue")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+      className: "form-submit",
+      value: "SUBMIT",
+      type: "submit",
+      onClick: this.handleFormSubmit
+    }))));
+  }
+
+}
+
+/* harmony default export */ __webpack_exports__["default"] = (Register);
 
 /***/ }),
 
