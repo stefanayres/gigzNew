@@ -1,6 +1,4 @@
 <?php
-
-
 namespace App\Http\Controllers;
 
 use App\Http\Requests\RegisterAuthRequest;
@@ -8,6 +6,7 @@ use App\User;
 use Illuminate\Http\Request;
 use JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
+ use Illuminate\Support\Facades\Validator;
 
 use lluminate\Foundation\Auth\SendsPasswordResetEmails;
 use Illuminate\Foundation\Auth\ResetsPasswords;
@@ -18,10 +17,15 @@ class ApiController extends Controller
 
    public function register(RegisterAuthRequest $request)
    {
-     $this->validate($request, array(
-       'name'  => 'max:255',
-       'email' => 'max:255',
-     ));
+     $validator = Validator::make($request->all(), [
+                'name' => 'required|string|max:255',
+                'email' => 'required|string|email|max:255|unique:users',
+                'password' => 'required|string|min:6|confirmed',     // password & password_confirmation in form 
+            ]);
+
+            if($validator->fails()){
+                    return response()->json($validator->errors()->toJson(), 400);
+            }
 
        $user = new User();
        $user->name = $request->name;
@@ -102,6 +106,7 @@ class ApiController extends Controller
    {
      try {
        $user = User::find($id);
+
        return response()->json([
            'success' => true,
            'data' => $user
@@ -114,10 +119,10 @@ class ApiController extends Controller
      }
  }
 
-   public function edit(Request $request) // edit logged in user
+   public function edit() // edit logged in user
    {
-
-     $user = JWTAuth::authenticate($request->token);
+     $user_id = JWTAuth::user()->id;
+     $user = User::find($user_id);
 
       return response()->json([
          'success' => true,
@@ -127,21 +132,30 @@ class ApiController extends Controller
 
    public function update(Request $request) // update logged in user
    {
-     $this->validate($request, array(
-       'name'  => 'max:255',
-       'email' => 'max:255',
-     ));
+     try{
+       $this->validate($request, array(
+         'name'  => 'max:255',
+         'email' => 'max:255',
+       ));
 
-      $user = JWTAuth::authenticate($request->token);
-      $user->name = $request->name;
-      $user->email = $request->email;
-      $user->password = bcrypt($request->password);
-      $user->save();
+        $user_id = JWTAuth::user()->id;
+        $user = User::find($user_id);
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->password = bcrypt($request->password);
+        $user->save();
 
-      return response()->json([
-         'success' => true,
-         'data' => $user
-      ], 200);
+        return response()->json([
+           'success' => true,
+           'data' => $user
+        ], 200);
+      } catch (JWTException $exception) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Sorry',
+            'ErrorException' => $exception
+        ], 400);
+      }
   }
 
    public function editUser($id) // admin can edit any user by id
@@ -156,12 +170,13 @@ class ApiController extends Controller
 
    public function updateUser(Request $request, $id) // admin can update any user by id
    {
-     $this->validate($request, array(
-       'name'  => 'max:255',
-       'email' => 'max:255',
-     ));
+    try{
+      $this->validate($request, array(
+        'name'  => 'max:255',
+        'email' => 'max:255',
+      ));
 
-     $user = User::find($id);
+     $user = User::find(intval($id));
      $user->name = $request->name;
      $user->email = $request->email;
      $user->password = bcrypt($request->password);
@@ -171,6 +186,13 @@ class ApiController extends Controller
         'success' => true,
         'data' => $user
      ], 200);
+   } catch (JWTException $exception) {
+     return response()->json([
+         'success' => false,
+         'message' => 'Sorry',
+         'ErrorException' => $exception
+     ], 400);
+   }
   }
 
 

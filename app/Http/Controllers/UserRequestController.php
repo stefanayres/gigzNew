@@ -8,7 +8,6 @@ use JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 
 
-
 class UserRequestController extends Controller
 {
 
@@ -34,28 +33,18 @@ public function __construct()
             'data' => $allRequests
         ], 200);
     }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
     /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store($id, Request $request)
     {
+      try{
         $this->validate($request, array(
           //'requestingUser_id'   => 'required',
-          'requestedUser_id'    => 'required',
+          //'requestedUser_id'    => 'required',
           'location'            => 'max:255',
           'details'             => 'max:255',
           'price'               => 'max:255',
@@ -66,10 +55,11 @@ public function __construct()
         //JWTAuth::setToken($user_token);
         //$user_id = JWTAuth::authenticate()->id;
         $user_id = JWTAuth::user()->id;
+        $userid = $id;
 
         $userRequest = new UserRequest();
         $userRequest->requestingUser_id = $user_id;
-        $userRequest->requestedUser_id = $request->requestedUser_id;
+        $userRequest->requestedUser_id = $userid;  //$request->requestedUser_id;
         $userRequest->location = $request->location;
         $userRequest->details = $request->details;
         $userRequest->price = $request->price;
@@ -81,6 +71,13 @@ public function __construct()
             'success' => true,
             'data' => $userRequest
         ], 200);
+      } catch (JWTException $exception) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Sorry, something went wrong!',
+            'ErrorException' => $exception
+        ], 400);
+      }
     }
 
     /**
@@ -107,7 +104,7 @@ public function __construct()
   }
 
     /**
-     * Display a listing of the resource.
+     * 
      *
      * @param  \App\UserRequest  $userRequest
      * @return \Illuminate\Http\Response
@@ -132,7 +129,7 @@ public function __construct()
     }
 
     /**
-     * Display a listing of the resource.
+     *
      *
      * @param  \App\UserRequest  $userRequest
      * @return \Illuminate\Http\Response

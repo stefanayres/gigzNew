@@ -63630,6 +63630,10 @@ class AuthService {
     // Get a token from api server using the fetch api
     return this.fetch(`${this.domain}/login`, {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
       body: JSON.stringify({
         email,
         password
@@ -63645,6 +63649,9 @@ class AuthService {
     // Get a token from api server using the fetch api
     return this.fetch(`${this.domain}/register`, {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
       body: JSON.stringify({
         username,
         email,

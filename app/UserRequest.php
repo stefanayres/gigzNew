@@ -7,11 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 class UserRequest extends Model
 {
 
-  public function users()
-  {
-      return $this->belongsTo('App/User');
-  }
-
     /**
      * The attributes that are mass assignable.
      *
@@ -21,6 +16,11 @@ class UserRequest extends Model
          'requestingUser_id', 'requetsedUser_id', 'location', 'details', 'price', 'requestDate', 'status',
     ];
 
-    
+      public function users()
+      {
+          return $this->belongsTo('App/User');
+      }
+
+
 
 }
