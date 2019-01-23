@@ -74,12 +74,10 @@ class UserDetailsController extends Controller
      * @param  \App\userDetail  $userDetail
      * @return \Illuminate\Http\Response
      */
-    public function show()
+    public function show($id)
     {
       try {
-        //$users = userDetail::find(intval($id));
-        $user_id = JWTAuth::user()->id;
-        $users = userDetail::where('User_id', $user_id)->get();
+        $users = userDetail::find(intval($id));
 
         return response()->json([
             'success' => true,
@@ -88,7 +86,7 @@ class UserDetailsController extends Controller
       } catch (JWTException $exception) {
         return response()->json([
             'success' => false,
-            'message' => 'Sorry, you have not filled out your details yet.'
+            'message' => 'No user details for this user.'
         ], 400);
       }
     }
@@ -151,7 +149,6 @@ class UserDetailsController extends Controller
 
 
 
-
     /**
      * Remove the specified resource from storage.
      *
@@ -162,4 +159,13 @@ class UserDetailsController extends Controller
     {
         //
     }
+
+
+// where user_id = $user_id query
+// $users = userDetail::where('User_id', $user_id)->get();
+
+
+
+
+
 }

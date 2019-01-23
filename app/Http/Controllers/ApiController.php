@@ -20,7 +20,7 @@ class ApiController extends Controller
      $validator = Validator::make($request->all(), [
                 'name' => 'required|string|max:255',
                 'email' => 'required|string|email|max:255|unique:users',
-                'password' => 'required|string|min:6|confirmed',     // password & password_confirmation in form 
+                'password' => 'required|string|min:6|confirmed',     // password & password_confirmation in form
             ]);
 
             if($validator->fails()){
@@ -83,18 +83,28 @@ class ApiController extends Controller
        }
    }
 
-   public function getAuthUser(Request $request)
-   {
-       $user = JWTAuth::authenticate($request->token);
-       return response()->json(['user' => $user]);
-   }
+   /**
+    *
+    * @param  \Illuminate\Http\Request  $request
+    * @return \Illuminate\Http\Response
+    */
+     public function getAuthUser(Request $request)
+     {
+         $user = JWTAuth::authenticate($request->token);
+         return response()->json(['user' => $user]);
+     }
 
-   public function showAllUsers(Request $request)
-   {
-     // get all users
-     $allUsers = User::all();
-     return response()->json(['user' => $allUsers]);
-   }
+     /**
+      *
+      * @param  \Illuminate\Http\Request  $request
+      * @return \Illuminate\Http\Response
+      */
+     public function showAllUsers(Request $request)
+     {
+       // get all users
+       $allUsers = User::all();
+       return response()->json(['user' => $allUsers]);
+     }
 
    /**
     * Display the specified resource.
@@ -117,8 +127,12 @@ class ApiController extends Controller
            'message' => 'Sorry, Can not find user'
        ], 400);
      }
- }
+   }
 
+   /**
+    *
+    * @return \Illuminate\Http\Response
+    */
    public function edit() // edit logged in user
    {
      $user_id = JWTAuth::user()->id;
@@ -130,6 +144,11 @@ class ApiController extends Controller
       ], 200);
   }
 
+  /**
+   *
+   * @param  \Illuminate\Http\Request  $request
+   * @return \Illuminate\Http\Response
+   */
    public function update(Request $request) // update logged in user
    {
      try{
@@ -158,6 +177,11 @@ class ApiController extends Controller
       }
   }
 
+  /**
+   *
+   * @param  int $id
+   * @return \Illuminate\Http\Response
+   */
    public function editUser($id) // admin can edit any user by id
    {
       $user = User::find($id);
@@ -166,8 +190,13 @@ class ApiController extends Controller
          'success' => true,
          'data' => $user
       ], 200);
-  }
+    }
 
+  /**
+   * @param int $id
+   * @param  \Illuminate\Http\Request  $request
+   * @return \Illuminate\Http\Response
+   */
    public function updateUser(Request $request, $id) // admin can update any user by id
    {
     try{
@@ -193,8 +222,38 @@ class ApiController extends Controller
          'ErrorException' => $exception
      ], 400);
    }
-  }
+}
 
+  /**
+   *
+   * @return \Illuminate\Http\Response
+   */
+    public function showAuthUserDetails()
+    {
+    try{
+      $user_id = JWTAuth::user()->id;
+      $user = User::findOrFail($user_id)->userDetails;
+
+        if ( is_null($user) ) {
+          return response()->json([
+             'success' => true,
+             'message' => 'Sorry, you have not filled out your details yet.'
+          ], 200);
+        }
+      return response()->json([
+         'success' => true,
+         'data' => $user
+      ], 200);
+    }
+    catch (JWTException $exception) {
+      return response()->json([
+          'success' => false,
+          'message' => 'Sorry',
+          'ErrorException' => $exception
+      ], 400);
+    }
+
+    }
 
 
 }

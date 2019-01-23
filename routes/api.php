@@ -9,6 +9,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::middleware('jwt.refresh')->get('/token/refresh', 'AuthController@refresh');//test
 //Route::get('show', function(){ return "POST SUCCESS!";});
 
+
     Route::post('login', 'ApiController@login');
     Route::post('register', 'ApiController@register');
     Route::get('details', 'ApiController@details');
@@ -19,11 +20,11 @@ Route::middleware('jwt.refresh')->get('/token/refresh', 'AuthController@refresh'
     Route::get('logout', 'ApiController@logout');
     Route::get('user', 'ApiController@getAuthUser'); // get auth user by token
     Route::get('show/{id}', 'ApiController@show'); // show user by id
-// edit and update users for auth user and admin
     Route::get('edit', 'ApiController@edit'); // user edit
     Route::patch('update', 'ApiController@update'); // user update
     Route::get('edit/{id}', 'ApiController@editUser'); // admin edit
     Route::patch('update/{id}', 'ApiController@updateUser'); // admin update
+    Route::get('showAuthUserDetails', 'ApiController@showAuthUserDetails'); // get auth user details
 // logged in user-request end-points
     Route::get('showAllRequests', 'UserRequestController@index'); // show all booking requests
     Route::post('storeRequest/{id}', 'UserRequestController@store'); // send & save booking request(auto fills auth user and needs recieving user id in URL)
@@ -32,14 +33,14 @@ Route::middleware('jwt.refresh')->get('/token/refresh', 'AuthController@refresh'
     Route::get('showRequestedFromUser', 'UserRequestController@showRequestedFromUser'); // show bookings made to user
     Route::get('editRequest/{id}/edit', 'UserRequestController@edit'); // get edit booking request by id -- todo
     Route::put('updateStatus/{id}', 'UserRequestController@updateStatus'); // update booking requests status (0=pending,1=accept,2=decline)
-    Route::patch('acceptRequest/{id}', 'UserRequestController@acceptRequest');
-    Route::patch('declineRequest/{id}', 'UserRequestController@declineRequest');
+    Route::patch('acceptRequest/{id}', 'UserRequestController@acceptRequest'); // accept a booking request by its id
+    Route::patch('declineRequest/{id}', 'UserRequestController@declineRequest'); // decline booking request by its id
 // end-points for user-details table
-    Route::get('showAllUserDetails', 'UserDetailsController@index');// shows user details of all users
+    Route::get('showAllUserDetails', 'UserDetailsController@index'); // shows user details of all users
     Route::post('storeUserDetails', 'UserDetailsController@store'); // stores user details for auth user
-    Route::get('showUserDetails/{id}', 'UserDetailsController@show');//
-    Route::get('editDetals/{id}', 'UserDetailsController@edit');
-    Route::patch('editDetals/{id}', 'UserDetailsController@update');
+    Route::get('showUserDetails/{id}', 'UserDetailsController@show'); // show user details by details id
+    Route::get('editDetals/{id}', 'UserDetailsController@edit'); // edit user details by details id
+    Route::patch('editDetals/{id}', 'UserDetailsController@update'); // update user details by details id
 
 
 
