@@ -147,7 +147,73 @@ class UserDetailsController extends Controller
     }
   }
 
+  /**
+   *
+   * @return \Illuminate\Http\Response
+   */
+    public function editAuthUserDetails()
+    {
+    try{
+      $user_id = JWTAuth::user()->id;
+      $user = userDetail::where('User_id', $user_id)->get();
 
+      if ( is_null($user) ) {
+        return response()->json([
+           'success' => true,
+           'message' => 'Sorry, you have not filled out your details yet.'
+        ], 200);
+      }
+      return response()->json([
+         'success' => true,
+         'data' => $user
+      ], 200);
+      }catch (JWTException $exception) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Sorry',
+            'ErrorException' => $exception
+        ], 400);
+      }
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\userDetail  $userDetails
+     * @return \Illuminate\Http\Response
+     */
+    public function updateAuthUserDetails(Request $request)
+    {
+      try {
+        $this->validate($request, array(
+          'bios'            => 'nullable',
+          'avatarURL'       => 'nullable',
+          'contactNumber'   => 'nullable',
+          'locationId'      => 'nullable'
+        ));
+        $user_id = JWTAuth::user()->id;
+
+        $userDetails = userDetail::select('id')->where('User_id', $user_id)->first();
+        $userDetails->user_id = $user_id;
+        $userDetails->bios = $request->bios;
+        $userDetails->avatarURL = $request->avatarURL;
+        $userDetails->contactNumber = $request->contactNumber;
+        $userDetails->locationId = $request->locationId;
+        $userDetails->save();
+
+        return response()->json([
+            'success' => true,
+            'data' => $userDetails
+        ], 200);
+        } catch (JWTException $exception) {
+          return response()->json([
+              'success' => false,
+              'message' => 'Sorry, something went wrong!',
+              'ErrorException' => $exception
+          ], 400);
+        }
+    }
 
     /**
      * Remove the specified resource from storage.

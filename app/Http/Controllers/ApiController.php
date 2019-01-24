@@ -244,15 +244,13 @@ class ApiController extends Controller
          'success' => true,
          'data' => $user
       ], 200);
-    }
-    catch (JWTException $exception) {
-      return response()->json([
-          'success' => false,
-          'message' => 'Sorry',
-          'ErrorException' => $exception
-      ], 400);
-    }
-
+      }catch (JWTException $exception) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Sorry',
+            'ErrorException' => $exception
+        ], 400);
+      }
     }
 
 

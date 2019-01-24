@@ -25,6 +25,7 @@ Route::middleware('jwt.refresh')->get('/token/refresh', 'AuthController@refresh'
     Route::get('edit/{id}', 'ApiController@editUser'); // admin edit
     Route::patch('update/{id}', 'ApiController@updateUser'); // admin update
     Route::get('showAuthUserDetails', 'ApiController@showAuthUserDetails'); // get auth user details
+
 // logged in user-request end-points
     Route::get('showAllRequests', 'UserRequestController@index'); // show all booking requests
     Route::post('storeRequest/{id}', 'UserRequestController@store'); // send & save booking request(auto fills auth user and needs recieving user id in URL)
@@ -40,8 +41,9 @@ Route::middleware('jwt.refresh')->get('/token/refresh', 'AuthController@refresh'
     Route::post('storeUserDetails', 'UserDetailsController@store'); // stores user details for auth user
     Route::get('showUserDetails/{id}', 'UserDetailsController@show'); // show user details by details id
     Route::get('editDetals/{id}', 'UserDetailsController@edit'); // edit user details by details id
-    Route::patch('editDetals/{id}', 'UserDetailsController@update'); // update user details by details id
-
+    Route::patch('updateDetals/{id}', 'UserDetailsController@update'); // update user details by details id
+    Route::get('editAuthUserDetails', 'UserDetailsController@editAuthUserDetails');
+    Route::patch('updateAuthUserDetails', 'UserDetailsController@updateAuthUserDetails');
 
 
 
