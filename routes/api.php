@@ -42,8 +42,8 @@ Route::middleware('jwt.refresh')->get('/token/refresh', 'AuthController@refresh'
     Route::get('showUserDetails/{id}', 'UserDetailsController@show'); // show user details by details id
     Route::get('editDetals/{id}', 'UserDetailsController@edit'); // edit user details by details id
     Route::patch('updateDetals/{id}', 'UserDetailsController@update'); // update user details by details id
-    Route::get('editAuthUserDetails', 'UserDetailsController@editAuthUserDetails');
-    Route::patch('updateAuthUserDetails', 'UserDetailsController@updateAuthUserDetails');
+    Route::get('editAuthUserDetails', 'UserDetailsController@editAuthUserDetails'); // edit the user details of auth user
+    Route::patch('updateAuthUserDetails', 'UserDetailsController@updateAuthUserDetails'); // update the user details of auth user
 
 
 
