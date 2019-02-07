@@ -9,12 +9,13 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::middleware('jwt.refresh')->get('/token/refresh', 'AuthController@refresh');//test
 //Route::get('show', function(){ return "POST SUCCESS!";});
 
+    Route::get('showRole1','ApiController@showRole1'); // show details of user with role 1 - venue
+    Route::get('showRole0','ApiController@showRole0');// show details of user with role 0 - band
 
     Route::post('login', 'ApiController@login');
     Route::post('register', 'ApiController@register');
     Route::get('details', 'ApiController@details');
     Route::get('show', 'ApiController@showAllUsers');
-
 //logged in user end-points
     Route::group(['middleware' => 'auth.jwt'], function () { // add header (Authorization : Bearer {Token}. for all routes without token pram)
     Route::get('logout', 'ApiController@logout');
@@ -44,8 +45,7 @@ Route::middleware('jwt.refresh')->get('/token/refresh', 'AuthController@refresh'
     Route::patch('updateDetals/{id}', 'UserDetailsController@update'); // update user details by details id
     Route::get('editAuthUserDetails', 'UserDetailsController@editAuthUserDetails'); // edit the user details of auth user
     Route::patch('updateAuthUserDetails', 'UserDetailsController@updateAuthUserDetails'); // update the user details of auth user
-
-
+    Route::post('update_avatar', 'UserDetailsController@update_avatar');
 
 
 

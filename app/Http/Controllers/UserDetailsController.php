@@ -37,6 +37,7 @@ class UserDetailsController extends Controller
     {
       try {
         $this->validate($request, array(
+          'genre'           => 'nullable',
           'bios'            => 'nullable',
           'avatarURL'       => 'nullable',
           'contactNumber'   => 'nullable',
@@ -48,6 +49,7 @@ class UserDetailsController extends Controller
 
         $userDetails = new UserDetail();
         $userDetails->user_id = $user_id;
+        $userDetails->genre = $genre;
         $userDetails->bios = $request->bios;
         $userDetails->avatarURL = $request->avatarURL;
         $userDetails->contactNumber = $request->contactNumber;
@@ -120,6 +122,7 @@ class UserDetailsController extends Controller
     {
       try {
         $this->validate($request, array(
+          'genre'           => 'nullable',
           'bios'            => 'nullable',
           'avatarURL'       => 'nullable',
           'contactNumber'   => 'nullable',
@@ -128,6 +131,7 @@ class UserDetailsController extends Controller
 
         $userDetails = userDetail::find($id);
         $userDetails->user_id = $user_id;
+        $userDetails->genre = $genre;
         $userDetails->bios = $request->bios;
         $userDetails->avatarURL = $request->avatarURL;
         $userDetails->contactNumber = $request->contactNumber;
@@ -188,6 +192,7 @@ class UserDetailsController extends Controller
       try {
         $this->validate($request, array(
           'bios'            => 'nullable',
+          'genre'           => 'nullable',
           'avatarURL'       => 'nullable',
           'contactNumber'   => 'nullable',
           'locationId'      => 'nullable'
@@ -196,6 +201,7 @@ class UserDetailsController extends Controller
 
         $userDetails = userDetail::select('id')->where('User_id', $user_id)->first();
         $userDetails->user_id = $user_id;
+        $userDetails->genre = $genre;
         $userDetails->bios = $request->bios;
         $userDetails->avatarURL = $request->avatarURL;
         $userDetails->contactNumber = $request->contactNumber;
@@ -214,6 +220,32 @@ class UserDetailsController extends Controller
           ], 400);
         }
     }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function update_avatar(Request $request) // not tested need to make blade temp
+    {
+      if($request->hasFile('avatar')){
+      $avatar = $request->file('avatar');
+      $fileName = time() . '.' . $avatar->getClientOriginalExtension();
+      Image::make($avatar)->resize(300, 300)->save( public_path('/uploads/avatars/' . $fileName));
+      }
+
+      $userDetail = JWTAuth::user();
+      $userDetail->avatarURL = $fileName;
+      $userDetail->save();
+
+      return response()->json([
+          'success' => true,
+          'data' => $userDetail,
+          'file_location' => $fileName
+      ], 200);
+    }
+
 
     /**
      * Remove the specified resource from storage.

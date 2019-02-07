@@ -16,10 +16,11 @@ class CreateUserDetailsTable extends Migration
         Schema::create('user_details', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id');
-            $table->text('bios');
-            $table->string('avatarURL');
-            $table->string('contactNumber');
-            $table->integer('locationId');
+            $table->string('genre')->nullable();
+            $table->text('bios')->nullable();
+            $table->string('avatarURL')->default('default.jpg'); // save to public uploads avatar folders
+            $table->string('contactNumber')->nullable();
+            $table->integer('locationId')->nullable(); //change to full address text
             $table->timestamps();
         });
     }

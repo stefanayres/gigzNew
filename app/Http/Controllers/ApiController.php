@@ -253,5 +253,57 @@ class ApiController extends Controller
       }
     }
 
+    /**
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function showRole0()
+    {
+      try {
+
+        $users = User::whereHas('UserDetails', function($q) {
+            $q->where('role', 0);
+        })->with('UserDetails')->orderBy('id', 'desc')->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $users
+        ], 200);
+      } catch (JWTException $exception) {
+        return response()->json([
+            'success' => false,
+            'message' => 'No user details for this user.'
+        ], 400);
+      }
+    }
+    /**
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function showRole1()
+    {
+      try {
+
+        $users = User::whereHas('UserDetails', function($q) {
+            $q->where('role', 1);
+        })->with('UserDetails')->orderBy('id', 'desc')->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $users
+        ], 200);
+      } catch (JWTException $exception) {
+        return response()->json([
+            'success' => false,
+            'message' => $exception
+        ], 400);
+      }
+    }
+
+
+
+
+
+
 
 }
