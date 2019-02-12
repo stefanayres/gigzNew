@@ -49,7 +49,7 @@ class UserDetailsController extends Controller
 
         $userDetails = new UserDetail();
         $userDetails->user_id = $user_id;
-        $userDetails->genre = $genre;
+        $userDetails->genre = $request->$genre;
         $userDetails->bios = $request->bios;
         $userDetails->avatarURL = $request->avatarURL;
         $userDetails->contactNumber = $request->contactNumber;

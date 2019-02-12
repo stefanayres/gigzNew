@@ -46,8 +46,9 @@ Route::middleware('jwt.refresh')->get('/token/refresh', 'AuthController@refresh'
     Route::get('editAuthUserDetails', 'UserDetailsController@editAuthUserDetails'); // edit the user details of auth user
     Route::patch('updateAuthUserDetails', 'UserDetailsController@updateAuthUserDetails'); // update the user details of auth user
     Route::post('update_avatar', 'UserDetailsController@update_avatar');
-
-
+// end-points for user reviws
+    Route::get('showReviews', 'ReviewController@index');
+    Route::post('storeReview/{id}', 'ReviewController@store');
 
 
 
