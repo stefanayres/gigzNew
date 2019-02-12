@@ -48,10 +48,11 @@ class ReviewController extends Controller
          ));
 
          $user_id = JWTAuth::user()->id;
+         $reviwed_user = $id;
 
          $review = new review();
          $review->user_id = $user_id;
-         $review->reviwed_user = $id->reviwed_user;
+         $review->reviwed_user = $reviwed_user;
          $review->rating = $request->rating;
          $review->body = $request->body;
          $review->save();
@@ -77,7 +78,43 @@ class ReviewController extends Controller
      */
     public function show($id)
     {
-        //
+      try {
+        $user_id = $id;
+        $userReview = review::where('reviwed_user', $user_id)->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $userReview
+        ]);
+    } catch (JWTException $exception) {
+      return response()->json([
+          'success' => false,
+          'message' => 'Sorry, no bookings set by you'
+      ], 400);
+    }
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function showAuthReviews()
+    {
+      try {
+        $user_id = JWTAuth::user()->id;
+        $userReview = review::where('reviwed_user', $user_id)->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $userReview
+        ]);
+    } catch (JWTException $exception) {
+      return response()->json([
+          'success' => false,
+          'message' => 'Sorry, no bookings set by you'
+      ], 400);
+    }
     }
 
     /**
@@ -88,7 +125,12 @@ class ReviewController extends Controller
      */
     public function edit($id)
     {
-        //
+      $review = review::find(intval($id));
+
+       return response()->json([
+          'success' => true,
+          'data' => $review
+       ], 200);
     }
 
     /**
@@ -100,7 +142,29 @@ class ReviewController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+      try {
+        $this->validate($request, array(
+          'body'      => 'nullable'
+        ));
+
+        $user_id = JWTAuth::user()->id;
+
+        $review = review::find($id);
+        $review->rating = $request->rating;
+        $review->body = $request->body;
+        $review->save();
+
+        return response()->json([
+            'success' => true,
+            'data' => $review
+        ], 200);
+    } catch (JWTException $exception) {
+      return response()->json([
+          'success' => false,
+          'message' => 'Sorry, something went wrong!',
+          'ErrorException' => $exception
+      ], 400);
+    }
     }
 
     /**

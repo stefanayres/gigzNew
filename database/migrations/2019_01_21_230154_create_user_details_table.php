@@ -18,7 +18,7 @@ class CreateUserDetailsTable extends Migration
             $table->integer('user_id');
             $table->string('genre')->nullable();
             $table->text('bios')->nullable();
-            $table->string('avatarURL')->default('default.jpg'); // save to public uploads avatar folders
+            $table->string('avatarURL')->default('default.jpg')->nullable(); // save to public uploads avatar folders
             $table->string('contactNumber')->nullable();
             $table->integer('locationId')->nullable(); //change to full address text
             $table->timestamps();

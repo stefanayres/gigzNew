@@ -26,7 +26,7 @@ Route::middleware('jwt.refresh')->get('/token/refresh', 'AuthController@refresh'
     Route::get('edit/{id}', 'ApiController@editUser'); // admin edit
     Route::patch('update/{id}', 'ApiController@updateUser'); // admin update
     Route::get('showAuthUserDetails', 'ApiController@showAuthUserDetails'); // get auth user details
-
+    Route::get('showUserAndDetails', 'ApiController@showAllUserDetails');// show user info and the user details for all users
 // logged in user-request end-points
     Route::get('showAllRequests', 'UserRequestController@index'); // show all booking requests
     Route::post('storeRequest/{id}', 'UserRequestController@store'); // send & save booking request(auto fills auth user and needs recieving user id in URL)
@@ -38,6 +38,7 @@ Route::middleware('jwt.refresh')->get('/token/refresh', 'AuthController@refresh'
     Route::patch('acceptRequest/{id}', 'UserRequestController@acceptRequest'); // accept a booking request by its id
     Route::patch('declineRequest/{id}', 'UserRequestController@declineRequest'); // decline booking request by its id
 // end-points for user-details table
+
     Route::get('showAllUserDetails', 'UserDetailsController@index'); // shows user details of all users
     Route::post('storeUserDetails', 'UserDetailsController@store'); // stores user details for auth user
     Route::get('showUserDetails/{id}', 'UserDetailsController@show'); // show user details by details id
@@ -45,12 +46,14 @@ Route::middleware('jwt.refresh')->get('/token/refresh', 'AuthController@refresh'
     Route::patch('updateDetals/{id}', 'UserDetailsController@update'); // update user details by details id
     Route::get('editAuthUserDetails', 'UserDetailsController@editAuthUserDetails'); // edit the user details of auth user
     Route::patch('updateAuthUserDetails', 'UserDetailsController@updateAuthUserDetails'); // update the user details of auth user
-    Route::post('update_avatar', 'UserDetailsController@update_avatar');
+    Route::post('update_avatar', 'UserDetailsController@update_avatar');// still in test mode
 // end-points for user reviws
-    Route::get('showReviews', 'ReviewController@index');
-    Route::post('storeReview/{id}', 'ReviewController@store');
-
-
+    Route::post('storeReview/{id}', 'ReviewController@store'); // auth user reviews other user by
+    Route::get('showReviews', 'ReviewController@index'); //show all reviews from all users.
+    Route::get('showReviews/{id}','ReviewController@show'); // show reviewed user by id
+    Route::get('myReviews','ReviewController@showAuthReviews');
+    Route::get('editReview/{id}','ReviewController@edit');
+    Route::patch('updateReview/{id}','ReviewController@update');
 
 
 

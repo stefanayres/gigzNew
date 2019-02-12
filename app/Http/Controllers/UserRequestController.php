@@ -104,7 +104,7 @@ public function __construct()
   }
 
     /**
-     * 
+     *
      *
      * @param  \App\UserRequest  $userRequest
      * @return \Illuminate\Http\Response
@@ -161,27 +161,18 @@ public function __construct()
      */
     public function edit($id, Request $request)
     {
-      $this->validate($request, array(
-        'location'            => 'max:255',
-        'details'             => 'max:255',
-        'price'               => 'max:255',
-        'requestDate'         => 'required',
-        'status'              => 'required'
+      try {
+        $request = UserRequest::find(intval($id));
 
-      ));
-
-      $userRequest = UserRequest::find($id);
-      $userRequest->location = $request->location;
-      $userRequest->details = $request->details;
-      $userRequest->price = $request->price;
-      $userRequest->requestDate = $request->requestDate;
-      $userRequest->status = $request->status;
-      $userRequest->save();
-
-      return response()->json([
-          'success' => true,
-          'data' => $userRequest
-      ], 200);
+        return response()->json([
+            'success' => true,
+            'data' => $request
+        ], 200);
+      } catch (JWTException $exception) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Sorry, no bookings found.'
+        ], 400);
     }
 
     /**

@@ -19,7 +19,7 @@ class UserDetailsController extends Controller
     public function index()
     {
         $users = userDetail::all();
-
+        
         return response()->json([
             'success' => true,
             'data' => $users
@@ -49,7 +49,7 @@ class UserDetailsController extends Controller
 
         $userDetails = new UserDetail();
         $userDetails->user_id = $user_id;
-        $userDetails->genre = $request->$genre;
+        $userDetails->genre = $request->genre;
         $userDetails->bios = $request->bios;
         $userDetails->avatarURL = $request->avatarURL;
         $userDetails->contactNumber = $request->contactNumber;
@@ -131,7 +131,7 @@ class UserDetailsController extends Controller
 
         $userDetails = userDetail::find($id);
         $userDetails->user_id = $user_id;
-        $userDetails->genre = $genre;
+        $userDetails->genre = $request->genre;
         $userDetails->bios = $request->bios;
         $userDetails->avatarURL = $request->avatarURL;
         $userDetails->contactNumber = $request->contactNumber;
@@ -191,8 +191,8 @@ class UserDetailsController extends Controller
     {
       try {
         $this->validate($request, array(
-          'bios'            => 'nullable',
           'genre'           => 'nullable',
+          'bios'            => 'nullable',
           'avatarURL'       => 'nullable',
           'contactNumber'   => 'nullable',
           'locationId'      => 'nullable'
@@ -201,7 +201,7 @@ class UserDetailsController extends Controller
 
         $userDetails = userDetail::select('id')->where('User_id', $user_id)->first();
         $userDetails->user_id = $user_id;
-        $userDetails->genre = $genre;
+        $userDetails->genre = $request->genre;
         $userDetails->bios = $request->bios;
         $userDetails->avatarURL = $request->avatarURL;
         $userDetails->contactNumber = $request->contactNumber;
