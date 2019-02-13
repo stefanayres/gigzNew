@@ -26,6 +26,7 @@ Route::middleware('jwt.refresh')->get('/token/refresh', 'AuthController@refresh'
     Route::get('edit/{id}', 'ApiController@editUser'); // admin edit showAuthUserDetails
     Route::patch('update/{id}', 'ApiController@updateUser'); // admin update
     Route::get('showAuthUserDetails', 'ApiController@showAuthUserDetails'); // get auth user details
+    Route::get('showAuthUserAndDetails', 'ApiController@showFullAuthUserDetails');
     Route::get('showUserAndDetails', 'ApiController@showAllUserDetails');// show user info and the user details for all users
     Route::get('showUserAndDetails/{id}', 'ApiController@showFullUserById');
 // logged in user-request end-points

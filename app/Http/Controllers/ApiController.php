@@ -257,6 +257,36 @@ class ApiController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+      public function showFullAuthUserDetails()
+      {
+      try{
+        $user_id = JWTAuth::user()->id;
+        $user = User::with('userDetails')->where('id', $user_id)->get();
+        //$user = User::findOrFail($user_id)->userDetails;
+
+          if ( is_null($user) ) {
+            return response()->json([
+               'success' => true,
+               'message' => 'Sorry, you have not filled out your details yet.'
+            ], 200);
+          }
+        return response()->json([
+           'success' => true,
+           'data' => $user
+        ], 200);
+        }catch (JWTException $exception) {
+          return response()->json([
+              'success' => false,
+              'message' => 'Sorry',
+              'ErrorException' => $exception
+          ], 400);
+        }
+      }
+
+    /**
+     *
+     * @return \Illuminate\Http\Response
+     */
       public function showFullUserById($id)
       {
       try{
