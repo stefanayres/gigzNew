@@ -19,7 +19,7 @@ class UserDetailsController extends Controller
     public function index()
     {
         $users = userDetail::all();
-        
+
         return response()->json([
             'success' => true,
             'data' => $users

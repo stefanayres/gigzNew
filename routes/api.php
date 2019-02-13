@@ -23,10 +23,11 @@ Route::middleware('jwt.refresh')->get('/token/refresh', 'AuthController@refresh'
     Route::get('show/{id}', 'ApiController@show'); // show user by id
     Route::get('edit', 'ApiController@edit'); // user edit
     Route::patch('update', 'ApiController@update'); // user update
-    Route::get('edit/{id}', 'ApiController@editUser'); // admin edit
+    Route::get('edit/{id}', 'ApiController@editUser'); // admin edit showAuthUserDetails
     Route::patch('update/{id}', 'ApiController@updateUser'); // admin update
     Route::get('showAuthUserDetails', 'ApiController@showAuthUserDetails'); // get auth user details
     Route::get('showUserAndDetails', 'ApiController@showAllUserDetails');// show user info and the user details for all users
+    Route::get('showUserAndDetails/{id}', 'ApiController@showFullUserById');
 // logged in user-request end-points
     Route::get('showAllRequests', 'UserRequestController@index'); // show all booking requests
     Route::post('storeRequest/{id}', 'UserRequestController@store'); // send & save booking request(auto fills auth user and needs recieving user id in URL)
@@ -54,6 +55,7 @@ Route::middleware('jwt.refresh')->get('/token/refresh', 'AuthController@refresh'
     Route::get('myReviews','ReviewController@showAuthReviews');
     Route::get('editReview/{id}','ReviewController@edit');
     Route::patch('updateReview/{id}','ReviewController@update');
+    Route::delete('deleteReview/{id}','ReviewController@destroy');
 
 
 

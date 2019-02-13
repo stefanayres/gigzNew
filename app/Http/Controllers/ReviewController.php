@@ -175,6 +175,21 @@ class ReviewController extends Controller
      */
     public function destroy($id)
     {
-        //
+      try {
+        $review = review::find($id);
+        $review->delete();
+
+      return response()->json([
+          'success' => true,
+          'msg' => 'Record deleted successfully'
+          'data' => $review
+      ], 200);
+    } catch (JWTException $exception) {
+      return response()->json([
+          'success' => false,
+          'message' => 'Sorry, something went wrong!',
+          'ErrorException' => $exception
+    ], 400);
+  }
     }
 }
