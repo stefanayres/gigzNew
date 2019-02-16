@@ -43,8 +43,6 @@ public function __construct()
     {
       try{
         $this->validate($request, array(
-          //'requestingUser_id'   => 'required',
-          //'requestedUser_id'    => 'required',
           'location'            => 'max:255',
           'details'             => 'max:255',
           'price'               => 'max:255',
@@ -52,8 +50,6 @@ public function __construct()
           'status'              => 'required'
 
         ));
-        //JWTAuth::setToken($user_token);
-        //$user_id = JWTAuth::authenticate()->id;
         $user_id = JWTAuth::user()->id;
         $userid = $id;
 
@@ -114,7 +110,9 @@ public function __construct()
 
         try {
             $user_id = JWTAuth::user()->id;
-            $userRequest = UserRequest::where('requestingUser_id', $user_id)->get();
+            $userRequest = UserRequest::where('requestingUser_id', $user_id)
+            ->orderBy('status', 'asc')
+            ->get();// order by status desc
 
             return response()->json([
                 'success' => true,
@@ -139,7 +137,9 @@ public function __construct()
 
         try {
             $user_id = JWTAuth::user()->id;
-            $userRequest = UserRequest::where('requestedUser_id', $user_id)->get();
+            $userRequest = UserRequest::where('requestedUser_id', $user_id)
+            ->orderBy('status', 'asc')
+            ->get();
 
             return response()->json([
                 'success' => true,
@@ -174,7 +174,7 @@ public function __construct()
             'message' => 'Sorry, no bookings found.'
         ], 400);
     }
-
+}
     /**
      * Update the specified resource in storage.
      *
@@ -240,7 +240,7 @@ public function __construct()
      * @param  \App\UserRequest  $userRequest
      * @return \Illuminate\Http\Response
      */
-    public function destroy(UserRequest $userRequest)
+    public function destroy($id)
     {
         $userRequest->delete();
 

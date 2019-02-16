@@ -25,16 +25,6 @@ class ReviewController extends Controller
      }
 
      /**
-      * Show the form for creating a new resource.
-      *
-      * @return \Illuminate\Http\Response
-      */
-     public function create()
-     {
-         //
-     }
-
-     /**
       * Store a newly created resource in storage.
       *
       * @param  \Illuminate\Http\Request  $request
@@ -48,11 +38,11 @@ class ReviewController extends Controller
          ));
 
          $user_id = JWTAuth::user()->id;
-         $reviwed_user = $id;
+         $reviewed_user = $id;
 
          $review = new review();
          $review->user_id = $user_id;
-         $review->reviwed_user = $reviwed_user;
+         $review->reviewed_user = $reviewed_user;
          $review->rating = $request->rating;
          $review->body = $request->body;
          $review->save();
@@ -80,7 +70,7 @@ class ReviewController extends Controller
     {
       try {
         $user_id = $id;
-        $userReview = review::where('reviwed_user', $user_id)->get();
+        $userReview = review::where('reviewed_user', $user_id)->get();
 
         return response()->json([
             'success' => true,
@@ -88,8 +78,7 @@ class ReviewController extends Controller
         ]);
     } catch (JWTException $exception) {
       return response()->json([
-          'success' => false,
-          'message' => 'Sorry, no bookings set by you'
+          'success' => false
       ], 400);
     }
     }
@@ -103,7 +92,7 @@ class ReviewController extends Controller
     {
       try {
         $user_id = JWTAuth::user()->id;
-        $userReview = review::where('reviwed_user', $user_id)->get();
+        $userReview = review::where('reviewed_user', $user_id)->get();
 
         return response()->json([
             'success' => true,
@@ -111,8 +100,7 @@ class ReviewController extends Controller
         ]);
     } catch (JWTException $exception) {
       return response()->json([
-          'success' => false,
-          'message' => 'Sorry, no bookings set by you'
+          'success' => false
       ], 400);
     }
     }
@@ -165,7 +153,7 @@ class ReviewController extends Controller
           'ErrorException' => $exception
       ], 400);
     }
-    }
+  }
 
     /**
      * Remove the specified resource from storage.
@@ -181,7 +169,7 @@ class ReviewController extends Controller
 
       return response()->json([
           'success' => true,
-          'msg' => 'Record deleted successfully'
+          'msg' => 'Record deleted successfully',
           'data' => $review
       ], 200);
     } catch (JWTException $exception) {
@@ -191,5 +179,7 @@ class ReviewController extends Controller
           'ErrorException' => $exception
     ], 400);
   }
-    }
+}
+
+
 }

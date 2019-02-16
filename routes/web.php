@@ -12,9 +12,9 @@
 
 Route::view('/{path?}', 'home');
 
-Route::get('/', function () {
+Route::get('{all?}', function(){
     return view('home');
-});
+})->where(x'all', '([A-z\d-\/_.]+)?');
 
 
 Route::get( '/{any}', function () {
@@ -22,6 +22,14 @@ Route::get( '/{any}', function () {
 })->where('any', '.*');
 
 */
-Route::get('{all?}', function(){
+
+
+Route::get('/', function () {
     return view('home');
-})->where('all', '([A-z\d-\/_.]+)?');
+});
+Route::get('/welcome', function () {
+    return view('welcome');
+});
+Route::get('/image', function () {
+    return view('uploadImage');
+});

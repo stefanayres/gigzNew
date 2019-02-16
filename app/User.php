@@ -50,7 +50,7 @@ class User extends Authenticatable implements JWTSubject
 
     public function userRequest()
     {
-      return $this->hasMany('App/UserRequest');
+      return $this->hasMany('App\UserRequest');
     }
 
     public function userDetails()
@@ -60,7 +60,12 @@ class User extends Authenticatable implements JWTSubject
 
     public function review()
     {
-      return $this->hasMany('App/review');
+      return $this->hasMany('App\review');
+    }
+
+    public function favourite()
+    {
+      return $this->hasMany('App\favourite');
     }
 
 }

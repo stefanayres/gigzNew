@@ -31,9 +31,6 @@ class CreateUserRequestsTable extends Migration
     }
 
 
-
-
-
     /**
      * Reverse the migrations.
      *

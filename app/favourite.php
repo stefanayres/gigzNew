@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class review extends Model
+class favourite extends Model
 {
 
   /**
@@ -13,7 +13,16 @@ class review extends Model
    * @var array
    */
   protected $fillable = [
-       'user_id', 'reviewed_user', 'rating', 'body',
+    'users_id', 'favourite_id', 'fav',
+  ];
+
+  /**
+   * The attributes that should be hidden for arrays.
+   *
+   * @var array
+   */
+  protected $hidden = [
+      'id',
   ];
 
   public function users()

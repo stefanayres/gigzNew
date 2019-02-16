@@ -19,12 +19,16 @@ class ApiController extends Controller
    {
      $validator = Validator::make($request->all(), [
                 'name' => 'required|string|max:255',
-                'email' => 'required|string|email|max:255|unique:users',
+                'email' => 'required|string|email|max:255|unique:users', // checks for unique email address
                 'password' => 'required|string|min:6|confirmed',     // password & password_confirmation in form
             ]);
 
             if($validator->fails()){
-                    return response()->json($validator->errors()->toJson(), 400);
+                    //return response()->json($validator->errors()->toJson(), 400);
+                    return response()->json([
+                        'success' => false,
+                        'data' => $validator
+                    ], 400);
             }
 
        $user = new User();
@@ -156,8 +160,8 @@ class ApiController extends Controller
          'name'  => 'max:255',
          'email' => 'max:255',
        ));
-
         $user_id = JWTAuth::user()->id;
+
         $user = User::find($user_id);
         $user->name = $request->name;
         $user->email = $request->email;
@@ -310,6 +314,44 @@ class ApiController extends Controller
           ], 400);
         }
       }
+
+      /**
+       *
+       * @return \Illuminate\Http\Response
+       */
+        public function showFavouritedUsers() //----------------------------------- fav testing still
+        {
+        try{
+          $user_id = JWTAuth::user()->id;
+
+
+       $users = User::where('id', '=', $user_id)->whereHas('favourite', function ($query) {
+          $query->where('fav', '=', 1);
+        })->with('favourite')->orderBy('id', 'desc')->get();
+
+        //$users = User::with('favourite')->where('id', $id)
+          //->whereHas('favourite', function($q) {
+          //  $q->where('fav', 0);
+        //  })->get();
+
+            if ( is_null($users) ) {
+              return response()->json([
+                 'success' => true,
+                 'message' => 'Sorry, you have not filled out your details yet.'
+              ], 200);
+            }
+          return response()->json([
+             'success' => true,
+             'data' => $users
+          ], 200);
+          }catch (JWTException $exception) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Sorry',
+                'ErrorException' => $exception
+            ], 400);
+          }
+        }
 
     /**
      *

@@ -235,7 +235,9 @@ class UserDetailsController extends Controller
       Image::make($avatar)->resize(300, 300)->save( public_path('/uploads/avatars/' . $fileName));
       }
 
-      $userDetail = JWTAuth::user();
+      $user = User::find($user_id);
+
+      $userDetail = JWTAuth::user()->id;
       $userDetail->avatarURL = $fileName;
       $userDetail->save();
 
@@ -245,19 +247,6 @@ class UserDetailsController extends Controller
           'file_location' => $fileName
       ], 200);
     }
-
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\userDetail  $userDetails
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(userDetails $userDetails)
-    {
-        //
-    }
-
 
 // where user_id = $user_id query
 // $users = userDetail::where('User_id', $user_id)->get();

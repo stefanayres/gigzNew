@@ -5,10 +5,14 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+// debugging log actions
+\Event::listen('Illuminate\Database\Events\QueryExecuted', function ($query) {
+    Log::info( json_encode($query->sql) );
+    Log::info( json_encode($query->bindings) );
+    Log::info( json_encode($query->time)   );
+});
 
-Route::middleware('jwt.refresh')->get('/token/refresh', 'AuthController@refresh');//test
-//Route::get('show', function(){ return "POST SUCCESS!";});
-
+    //Route::middleware('jwt.refresh')->get('/token/refresh', 'AuthController@refresh');//test
     Route::get('showRole1','ApiController@showRole1'); // show details of user with role 1 - venue
     Route::get('showRole0','ApiController@showRole0');// show details of user with role 0 - band
 
@@ -16,6 +20,7 @@ Route::middleware('jwt.refresh')->get('/token/refresh', 'AuthController@refresh'
     Route::post('register', 'ApiController@register');
     Route::get('details', 'ApiController@details');
     Route::get('show', 'ApiController@showAllUsers');
+    
 //logged in user end-points
     Route::group(['middleware' => 'auth.jwt'], function () { // add header (Authorization : Bearer {Token}. for all routes without token pram)
     Route::get('logout', 'ApiController@logout');
@@ -26,9 +31,9 @@ Route::middleware('jwt.refresh')->get('/token/refresh', 'AuthController@refresh'
     Route::get('edit/{id}', 'ApiController@editUser'); // admin edit showAuthUserDetails
     Route::patch('update/{id}', 'ApiController@updateUser'); // admin update
     Route::get('showAuthUserDetails', 'ApiController@showAuthUserDetails'); // get auth user details
-    Route::get('showAuthUserAndDetails', 'ApiController@showFullAuthUserDetails');
+    Route::get('showAuthUserAndDetails', 'ApiController@showFullAuthUserDetails'); // get auth user info and details
     Route::get('showUserAndDetails', 'ApiController@showAllUserDetails');// show user info and the user details for all users
-    Route::get('showUserAndDetails/{id}', 'ApiController@showFullUserById');
+    Route::get('showUserAndDetails/{id}', 'ApiController@showFullUserById'); // show user info and details by id
 // logged in user-request end-points
     Route::get('showAllRequests', 'UserRequestController@index'); // show all booking requests
     Route::post('storeRequest/{id}', 'UserRequestController@store'); // send & save booking request(auto fills auth user and needs recieving user id in URL)
@@ -53,12 +58,15 @@ Route::middleware('jwt.refresh')->get('/token/refresh', 'AuthController@refresh'
     Route::post('storeReview/{id}', 'ReviewController@store'); // auth user reviews other user by
     Route::get('showReviews', 'ReviewController@index'); //show all reviews from all users.
     Route::get('showReviews/{id}','ReviewController@show'); // show reviewed user by id
-    Route::get('myReviews','ReviewController@showAuthReviews');
-    Route::get('editReview/{id}','ReviewController@edit');
-    Route::patch('updateReview/{id}','ReviewController@update');
-    Route::delete('deleteReview/{id}','ReviewController@destroy');
-
-
+    Route::get('myReviews','ReviewController@showAuthReviews'); //show all auth users reviews
+    Route::get('editReview/{id}','ReviewController@edit'); //show all users reviews by id
+    Route::patch('updateReview/{id}','ReviewController@update'); //update reviews by id
+    Route::delete('deleteReview/{id}','ReviewController@destroy');// delete review by id
+// end-point for favourites
+    Route::post('storeFav/{id}','FavouriteController@store');// store new fav user OR update unFavourite back to favourite
+    Route::get('showAllFav', 'FavouriteController@index');//show every favourite record
+    Route::get('favouritedUsers', 'FavouriteController@showFavouritedUsers');// show all auth users favourite records
+    Route::patch('unFavourite/{id}','FavouriteController@unFav'); // unFavourite a user by the users id
 
 
 

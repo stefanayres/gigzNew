@@ -16,10 +16,10 @@ class UserRequest extends Model
          'requestingUser_id', 'requetsedUser_id', 'location', 'details', 'price', 'requestDate', 'status',
     ];
 
-      public function users()
-      {
-          return $this->belongsTo('App/User');
-      }
+    public function users()
+    {
+        return $this->belongsTo('App\User');
+    }
 
 
 
