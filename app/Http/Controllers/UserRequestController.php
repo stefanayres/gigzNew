@@ -183,7 +183,7 @@ public function __construct()
      * @return \Illuminate\Http\Response
      */
     public function updateStatus($id, Request $request) // user can update own status (0=pending, 1=accepted, 2=denined)
-    {
+    {                                                   // not used - use the accept or decline methods below
       $userRequest = UserRequest::find($id);
       $userRequest->fill($request->only(['status']));
       $userRequest->save();
@@ -232,6 +232,39 @@ public function __construct()
               'data' => $userRequest,
               'message' => 'You have declined this booking.'
           ], 200);
+        }
+
+        /**
+         *
+         *
+         * @param  \App\UserRequest  $userRequest
+         * @return \Illuminate\Http\Response
+         */
+        public function showRequestingUserToAuth()
+        {
+
+            try {
+              $userRequest = User::whereHas('UserRequest', function($q) {
+                 $q->where('requestedUser_id', $id = JWTAuth::user()->id);
+              })->orderBy('id', 'desc')->get();
+
+              if ( is_null($userRequest) ) {
+                return response()->json([
+                   'success' => true,
+                   'message' => 'Sorry, you have no requests.'
+                ], 200);
+              }
+              return response()->json([
+                 'success' => true,
+                 'data' => $userRequest
+              ], 200);
+              }catch (JWTException $exception) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Sorry something went wrong',
+                    'ErrorException' => $exception
+                ], 400);
+            }
         }
 
     /**

@@ -271,7 +271,7 @@ class ApiController extends Controller
           if ( is_null($user) ) {
             return response()->json([
                'success' => true,
-               'message' => 'Sorry, you have not filled out your details yet.'
+               'message' => 'Sorry, you have not filled in your details.'
             ], 200);
           }
         return response()->json([
@@ -299,7 +299,7 @@ class ApiController extends Controller
           if ( is_null($user) ) {
             return response()->json([
                'success' => true,
-               'message' => 'Sorry, you have not filled out your details yet.'
+               'message' => 'Sorry, no details for this user.'
             ], 200);
           }
         return response()->json([
@@ -315,43 +315,6 @@ class ApiController extends Controller
         }
       }
 
-      /**
-       *
-       * @return \Illuminate\Http\Response
-       */
-        public function showFavouritedUsers() //----------------------------------- fav testing still
-        {
-        try{
-          $user_id = JWTAuth::user()->id;
-
-
-       $users = User::where('id', '=', $user_id)->whereHas('favourite', function ($query) {
-          $query->where('fav', '=', 1);
-        })->with('favourite')->orderBy('id', 'desc')->get();
-
-        //$users = User::with('favourite')->where('id', $id)
-          //->whereHas('favourite', function($q) {
-          //  $q->where('fav', 0);
-        //  })->get();
-
-            if ( is_null($users) ) {
-              return response()->json([
-                 'success' => true,
-                 'message' => 'Sorry, you have not filled out your details yet.'
-              ], 200);
-            }
-          return response()->json([
-             'success' => true,
-             'data' => $users
-          ], 200);
-          }catch (JWTException $exception) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Sorry',
-                'ErrorException' => $exception
-            ], 400);
-          }
-        }
 
     /**
      *
@@ -365,7 +328,7 @@ class ApiController extends Controller
           if ( is_null($user) ) {
             return response()->json([
                'success' => true,
-               'message' => 'Sorry, you have not filled out your details yet.'
+               'message' => 'Sorry, no user details saved yet.'
             ], 200);
           }
         return response()->json([
@@ -393,15 +356,22 @@ class ApiController extends Controller
             $q->where('role', 0);
         })->with('UserDetails')->orderBy('id', 'desc')->get();
 
+        if ( is_null($users) ) {
+          return response()->json([
+             'success' => true,
+             'message' => 'Sorry, no user signed up yet.'
+          ], 200);
+        }
         return response()->json([
-            'success' => true,
-            'data' => $users
+           'success' => true,
+           'data' => $users
         ], 200);
-      } catch (JWTException $exception) {
-        return response()->json([
-            'success' => false,
-            'message' => 'No user details for this user.'
-        ], 400);
+        }catch (JWTException $exception) {
+          return response()->json([
+              'success' => false,
+              'message' => 'Sorry something went wrong',
+              'ErrorException' => $exception
+          ], 400);
       }
     }
     /**
@@ -416,19 +386,114 @@ class ApiController extends Controller
             $q->where('role', 1);
         })->with('UserDetails')->orderBy('id', 'desc')->get();
 
+        if ( is_null($users) ) {
+          return response()->json([
+             'success' => true,
+             'message' => 'Sorry, no user signed up yet.'
+          ], 200);
+        }
         return response()->json([
-            'success' => true,
-            'data' => $users
+           'success' => true,
+           'data' => $users
         ], 200);
-      } catch (JWTException $exception) {
-        return response()->json([
-            'success' => false,
-            'message' => $exception
-        ], 400);
+        }catch (JWTException $exception) {
+          return response()->json([
+              'success' => false,
+              'message' => 'Sorry something went wrong',
+              'ErrorException' => $exception
+          ], 400);
       }
     }
 
+    public function showUsersRequestedByAuthUser()
+    {
 
+        try {
+          $userRequest = User::whereHas('UserRequest', function($q) {
+             $q->where('requestingUser_id', $id = JWTAuth::user()->id);
+          })->orderBy('id', 'desc')->get();
+
+          if ( is_null($userRequest) ) {
+            return response()->json([
+               'success' => true,
+               'message' => 'Sorry, you have not booked any users.'
+            ], 200);
+          }
+          return response()->json([
+             'success' => true,
+             'data' => $userRequest
+          ], 200);
+          }catch (JWTException $exception) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Sorry something went wrong',
+                'ErrorException' => $exception
+            ], 400);
+        }
+    }
+
+    /**
+     *
+     *
+     * @param  \App\UserRequest  $userRequest
+     * @return \Illuminate\Http\Response
+     */
+    public function showRequestingUserToAuth()
+    {
+
+        try {
+          $userRequest = User::whereHas('UserRequests', function($q) {
+             $q->where('requestedUser_id', $id = JWTAuth::user()->id);
+          })->orderBy('id', 'desc')->get();
+
+          if ( is_null($userRequest) ) {
+            return response()->json([
+               'success' => true,
+               'message' => 'Sorry, you have no requests.'
+            ], 200);
+          }
+          return response()->json([
+             'success' => true,
+             'data' => $userRequest
+          ], 200);
+          }catch (JWTException $exception) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Sorry something went wrong',
+                'ErrorException' => $exception
+            ], 400);
+        }
+    }
+
+    /**
+     *
+     * @return \Illuminate\Http\Response
+     */
+      public function showFavouritedUsers()
+      {
+      try{
+        $favourite = User::whereHas('favourite', function($q) {
+           $q->where('users_id', $id = JWTAuth::user()->id);
+        })->orderBy('id', 'desc')->get();
+
+          if ( is_null($favourite) ) {
+            return response()->json([
+               'success' => true,
+               'message' => 'Sorry, you have not have any favorite users.'
+            ], 200);
+          }
+        return response()->json([
+           'success' => true,
+           'data' => $favourite
+        ], 200);
+        }catch (JWTException $exception) {
+          return response()->json([
+              'success' => false,
+              'message' => 'Sorry something went wrong',
+              'ErrorException' => $exception
+          ], 400);
+        }
+      }
 
 
 

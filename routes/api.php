@@ -20,7 +20,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     Route::post('register', 'ApiController@register');
     Route::get('details', 'ApiController@details');
     Route::get('show', 'ApiController@showAllUsers');
-    
+
 //logged in user end-points
     Route::group(['middleware' => 'auth.jwt'], function () { // add header (Authorization : Bearer {Token}. for all routes without token pram)
     Route::get('logout', 'ApiController@logout');
@@ -34,6 +34,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     Route::get('showAuthUserAndDetails', 'ApiController@showFullAuthUserDetails'); // get auth user info and details
     Route::get('showUserAndDetails', 'ApiController@showAllUserDetails');// show user info and the user details for all users
     Route::get('showUserAndDetails/{id}', 'ApiController@showFullUserById'); // show user info and details by id
+    Route::get('authsRequestedUsers', 'ApiController@showUsersRequestedByAuthUser');// users details of requested users
+    Route::get('requestingUsersToAuth', 'ApiController@showRequestingUserToAuth'); // users details of users requesting auth user
 // logged in user-request end-points
     Route::get('showAllRequests', 'UserRequestController@index'); // show all booking requests
     Route::post('storeRequest/{id}', 'UserRequestController@store'); // send & save booking request(auto fills auth user and needs recieving user id in URL)
@@ -65,8 +67,9 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 // end-point for favourites
     Route::post('storeFav/{id}','FavouriteController@store');// store new fav user OR update unFavourite back to favourite
     Route::get('showAllFav', 'FavouriteController@index');//show every favourite record
-    Route::get('favouritedUsers', 'FavouriteController@showFavouritedUsers');// show all auth users favourite records
-    Route::patch('unFavourite/{id}','FavouriteController@unFav'); // unFavourite a user by the users id
+    Route::get('favoritedUsers', 'ApiController@showFavouritedUsers');// show all auth users favourite users
+    Route::patch('unFavorite/{id}','FavouriteController@unFav'); // unFavourite a user by the users id
+    Route::get('showFavRecordsByAuth','FavouriteController@showFavouritedUsersRecord'); // show favorite records for auth user
 
 
 

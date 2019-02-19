@@ -65,7 +65,7 @@ class FavouriteController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-      public function showFavouritedUsers()
+      public function showFavouritedUsersRecord()
       {
       try{
             $user_id = JWTAuth::user()->id;
