@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\UserDetail;
 use App\UserRequest;
 use Illuminate\Http\Request;
 use JWTAuth;
@@ -154,6 +155,34 @@ public function __construct()
     }
 
     /**
+     *
+     *
+     * @param  \App\UserRequest  $userRequest
+     * @return \Illuminate\Http\Response
+     */
+    public function showRequestsToAuth($id)
+    {
+
+        try {
+            $user_id = JWTAuth::user()->id;
+            $userRequest = UserRequest::where('requestedUser_id', $user_id)
+            ->where('requestingUser_id', $id)
+            ->orderBy('status', 'asc')
+            ->get();
+
+            return response()->json([
+                'success' => true,
+                'data' => $userRequest
+            ]);
+        } catch (JWTException $exception) {
+          return response()->json([
+              'success' => false,
+              'message' => 'Sorry, no bookings set by you'
+          ], 400);
+        }
+    }
+
+    /**
      * Show the form for editing the specified resource.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -232,39 +261,6 @@ public function __construct()
               'data' => $userRequest,
               'message' => 'You have declined this booking.'
           ], 200);
-        }
-
-        /**
-         *
-         *
-         * @param  \App\UserRequest  $userRequest
-         * @return \Illuminate\Http\Response
-         */
-        public function showRequestingUserToAuth()
-        {
-
-            try {
-              $userRequest = User::whereHas('UserRequest', function($q) {
-                 $q->where('requestedUser_id', $id = JWTAuth::user()->id);
-              })->orderBy('id', 'desc')->get();
-
-              if ( is_null($userRequest) ) {
-                return response()->json([
-                   'success' => true,
-                   'message' => 'Sorry, you have no requests.'
-                ], 200);
-              }
-              return response()->json([
-                 'success' => true,
-                 'data' => $userRequest
-              ], 200);
-              }catch (JWTException $exception) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Sorry something went wrong',
-                    'ErrorException' => $exception
-                ], 400);
-            }
         }
 
     /**

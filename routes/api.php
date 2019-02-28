@@ -34,8 +34,10 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     Route::get('showAuthUserAndDetails', 'ApiController@showFullAuthUserDetails'); // get auth user info and details
     Route::get('showUserAndDetails', 'ApiController@showAllUserDetails');// show user info and the user details for all users
     Route::get('showUserAndDetails/{id}', 'ApiController@showFullUserById'); // show user info and details by id
-    Route::get('authsRequestedUsers', 'ApiController@showUsersRequestedByAuthUser');// users details of requested users
-    Route::get('requestingUsersToAuth', 'ApiController@showRequestingUserToAuth'); // users details of users requesting auth user
+    Route::get('authsRequestedUsers', 'ApiController@showUsersRequestedByAuthUser');// users details of users making a request
+    Route::get('requestingUsersToAuth', 'ApiController@showRequestingUserToAuthPending'); // users details of users requesting auth user pending
+    Route::get('requestingUsersToAuthAccept', 'ApiController@showRequestingUserToAuthAccepted'); // users details of users requesting auth user accepted
+    Route::get('requestingUsersToAuthDecline', 'ApiController@showRequestingUserToAuthDeclined'); // users details of users requesting auth user declined
 // logged in user-request end-points
     Route::get('showAllRequests', 'UserRequestController@index'); // show all booking requests
     Route::post('storeRequest/{id}', 'UserRequestController@store'); // send & save booking request(auto fills auth user and needs recieving user id in URL)
@@ -46,6 +48,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     Route::put('updateStatus/{id}', 'UserRequestController@updateStatus'); // update booking requests status (0=pending,1=accept,2=decline)
     Route::patch('acceptRequest/{id}', 'UserRequestController@acceptRequest'); // accept a booking request by its id
     Route::patch('declineRequest/{id}', 'UserRequestController@declineRequest'); // decline booking request by its id
+    Route::get('showRequestsToAuth/{id}', 'UserRequestController@showRequestsToAuth');
 // end-points for user-details table
 
     Route::get('showAllUserDetails', 'UserDetailsController@index'); // shows user details of all users

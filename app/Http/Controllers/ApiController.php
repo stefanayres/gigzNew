@@ -409,9 +409,13 @@ class ApiController extends Controller
     {
 
         try {
+
           $userRequest = User::whereHas('UserRequest', function($q) {
-             $q->where('requestingUser_id', $id = JWTAuth::user()->id);
-          })->orderBy('id', 'desc')->get();
+             $q->where('requestingUser_id', $id = JWTAuth::user()->id); // ->where('status', 0)
+          })->with('userDetails')->orderBy('id', 'desc')->get();  // send back request with user details
+
+          //$user = User::with('userDetails')->where('id', $user_id)->get();  ->with('userRequest')
+
 
           if ( is_null($userRequest) ) {
             return response()->json([
@@ -438,13 +442,78 @@ class ApiController extends Controller
      * @param  \App\UserRequest  $userRequest
      * @return \Illuminate\Http\Response
      */
-    public function showRequestingUserToAuth()
+    public function showRequestingUserToAuthPending()
     {
 
         try {
           $userRequest = User::whereHas('UserRequests', function($q) {
-             $q->where('requestedUser_id', $id = JWTAuth::user()->id);
-          })->orderBy('id', 'desc')->get();
+             $q->where('requestedUser_id', $id = JWTAuth::user()->id)->where('status', 0);
+          })->with('userDetails')->orderBy('id', 'desc')->get();
+
+          if ( is_null($userRequest) ) {
+            return response()->json([
+               'success' => true,
+               'message' => 'Sorry, you have no requests.'
+            ], 200);
+          }
+          return response()->json([
+             'success' => true,
+             'data' => $userRequest
+          ], 200);
+          }catch (JWTException $exception) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Sorry something went wrong',
+                'ErrorException' => $exception
+            ], 400);
+        }
+    }
+    /**
+     *
+     *
+     * @param  \App\UserRequest  $userRequest
+     * @return \Illuminate\Http\Response
+     */
+    public function showRequestingUserToAuthAccepted()
+    {
+
+        try {
+          $userRequest = User::whereHas('UserRequests', function($q) {
+             $q->where('requestedUser_id', $id = JWTAuth::user()->id)->where('status', 1);
+          })->with('userDetails')->orderBy('id', 'desc')->get();
+
+          if ( is_null($userRequest) ) {
+            return response()->json([
+               'success' => true,
+               'message' => 'Sorry, you have no requests.'
+            ], 200);
+          }
+          return response()->json([
+             'success' => true,
+             'data' => $userRequest
+          ], 200);
+          }catch (JWTException $exception) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Sorry something went wrong',
+                'ErrorException' => $exception
+            ], 400);
+        }
+    }
+
+    /**
+     *
+     *
+     * @param  \App\UserRequest  $userRequest
+     * @return \Illuminate\Http\Response
+     */
+    public function showRequestingUserToAuthDeclined()
+    {
+
+        try {
+          $userRequest = User::whereHas('UserRequests', function($q) {
+             $q->where('requestedUser_id', $id = JWTAuth::user()->id)->where('status', 2);
+          })->with('userDetails')->orderBy('id', 'desc')->get();
 
           if ( is_null($userRequest) ) {
             return response()->json([
