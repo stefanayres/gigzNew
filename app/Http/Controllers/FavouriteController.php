@@ -69,7 +69,8 @@ class FavouriteController extends Controller
       {
       try{
             $user_id = JWTAuth::user()->id;
-            $result = favourite::where('users_id', $user_id)->where('fav', 1)->orderBy('id', 'desc')->get();
+            $result = favourite::where('users_id', $user_id)
+                                  ->where('fav', 1)->get();
 
        return response()->json([
            'success' => true,
@@ -101,12 +102,12 @@ class FavouriteController extends Controller
         return response()->json([
             'success' => true,
             'data' => $fav,
-            'message' => 'You have accepted this booking.'
+            'message' => 'You have un-favourited this user.'
         ], 200);
       } catch (JWTException $exception) {
         return response()->json([
             'success' => false,
-            'message' => 'No user details for this user.'
+            'message' => 'catch error.'
         ], 400);
       }
     }

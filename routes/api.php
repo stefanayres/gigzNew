@@ -44,13 +44,14 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     Route::get('showRequest/{id}', 'UserRequestController@show'); // show booking request by id
     Route::get('showRequestsByUser', 'UserRequestController@showRequestsByUser'); // show booking requests user made
     Route::get('showRequestedFromUser', 'UserRequestController@showRequestedFromUser'); // show bookings made to user
+    Route::get('showRequestedFromUserAccepted', 'UserRequestController@showRequestedFromUserAccepted'); // return accepted requests
+    Route::get('showRequestedFromUserDeclined', 'UserRequestController@showRequestedFromUserDeclined'); // return declined requests
     Route::get('editRequest/{id}/edit', 'UserRequestController@edit'); // get edit booking request by id -- todo
     Route::put('updateStatus/{id}', 'UserRequestController@updateStatus'); // update booking requests status (0=pending,1=accept,2=decline)
     Route::patch('acceptRequest/{id}', 'UserRequestController@acceptRequest'); // accept a booking request by its id
     Route::patch('declineRequest/{id}', 'UserRequestController@declineRequest'); // decline booking request by its id
     Route::get('showRequestsToAuth/{id}', 'UserRequestController@showRequestsToAuth');
 // end-points for user-details table
-
     Route::get('showAllUserDetails', 'UserDetailsController@index'); // shows user details of all users
     Route::post('storeUserDetails', 'UserDetailsController@store'); // stores user details for auth user
     Route::get('showUserDetails/{id}', 'UserDetailsController@show'); // show user details by details id
@@ -73,10 +74,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     Route::get('favoritedUsers', 'ApiController@showFavouritedUsers');// show all auth users favourite users
     Route::patch('unFavorite/{id}','FavouriteController@unFav'); // unFavourite a user by the users id
     Route::get('showFavRecordsByAuth','FavouriteController@showFavouritedUsersRecord'); // show favorite records for auth user
-
-
-
-
+    Route::get('favoritedUsersTrue', 'ApiController@showFavouritedUsersTrue'); // show users & details that are favourited by auth user
+    Route::get('favoritedUsersFalse', 'ApiController@showFavouritedUsersFalse'); // show users & details that are NOT favourited by auth user
 
 
 

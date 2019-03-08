@@ -160,6 +160,62 @@ public function __construct()
      * @param  \App\UserRequest  $userRequest
      * @return \Illuminate\Http\Response
      */
+    public function showRequestedFromUserAccepted()
+    {
+
+        try {
+            $user_id = JWTAuth::user()->id;
+
+            $userRequest = UserRequest::where('requestedUser_id', $user_id)
+            ->where('status', 1)
+            ->get();
+
+            return response()->json([
+                'success' => true,
+                'data' => $userRequest
+            ]);
+        } catch (JWTException $exception) {
+          return response()->json([
+              'success' => false,
+              'message' => 'Sorry, no bookings set by you'
+          ], 400);
+        }
+    }
+
+    /**
+     *
+     *
+     * @param  \App\UserRequest  $userRequest
+     * @return \Illuminate\Http\Response
+     */
+    public function showRequestedFromUserDeclined()
+    {
+
+        try {
+            $user_id = JWTAuth::user()->id;
+
+            $userRequest = UserRequest::where('requestedUser_id', $user_id)
+            ->where('status', 0)
+            ->get();
+
+            return response()->json([
+                'success' => true,
+                'data' => $userRequest
+            ]);
+        } catch (JWTException $exception) {
+          return response()->json([
+              'success' => false,
+              'message' => 'Sorry, no bookings set by you'
+          ], 400);
+        }
+    }
+
+    /**
+     *
+     *
+     * @param  \App\UserRequest  $userRequest
+     * @return \Illuminate\Http\Response
+     */
     public function showRequestsToAuth($id)
     {
 

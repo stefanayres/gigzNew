@@ -266,7 +266,6 @@ class ApiController extends Controller
       try{
         $user_id = JWTAuth::user()->id;
         $user = User::with('userDetails')->where('id', $user_id)->get();
-        //$user = User::findOrFail($user_id)->userDetails;
 
           if ( is_null($user) ) {
             return response()->json([
@@ -564,6 +563,65 @@ class ApiController extends Controller
         }
       }
 
+      /**
+       *
+       * @return \Illuminate\Http\Response
+       */
+        public function showFavouritedUsersTrue()
+        {
+        try{
+          $favourite = User::whereHas('favourite', function($q) {
+             $q->where('users_id', $id = JWTAuth::user()->id)->where('fav', 1);
+          })->with('userDetails')->orderBy('id', 'desc')->get();
+
+            if ( is_null($favourite) ) {
+              return response()->json([
+                 'success' => true,
+                 'message' => 'Sorry, you have not have any favorite users.'
+              ], 200);
+            }
+          return response()->json([
+             'success' => true,
+             'data' => $favourite
+          ], 200);
+          }catch (JWTException $exception) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Sorry something went wrong',
+                'ErrorException' => $exception
+            ], 400);
+          }
+        }
+
+        /**
+         *
+         * @return \Illuminate\Http\Response
+         */
+          public function showFavouritedUsersFalse()
+          {
+          try{
+            $favourite = User::whereHas('favourite', function($q) {
+               $q->where('users_id', $id = JWTAuth::user()->id)->where('fav', 0);
+                  })->with('userDetails')->orderBy('id', 'desc')->get();
+
+              if ( is_null($favourite) ) {
+                return response()->json([
+                   'success' => true,
+                   'message' => 'Sorry, you have not have any favorite users.'
+                ], 200);
+              }
+            return response()->json([
+               'success' => true,
+               'data' => $favourite
+            ], 200);
+            }catch (JWTException $exception) {
+              return response()->json([
+                  'success' => false,
+                  'message' => 'Sorry something went wrong',
+                  'ErrorException' => $exception
+              ], 400);
+            }
+          }
 
 
 
