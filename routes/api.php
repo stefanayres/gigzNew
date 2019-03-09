@@ -38,16 +38,18 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     Route::get('requestingUsersToAuth', 'ApiController@showRequestingUserToAuthPending'); // users details of users requesting auth user pending
     Route::get('requestingUsersToAuthAccept', 'ApiController@showRequestingUserToAuthAccepted'); // users details of users requesting auth user accepted
     Route::get('requestingUsersToAuthDecline', 'ApiController@showRequestingUserToAuthDeclined'); // users details of users requesting auth user declined
+Route::get('showRequestedUserToAuthDeclined', 'ApiController@showRequestedUserToAuthDeclined');
+
 // logged in user-request end-points
     Route::get('showAllRequests', 'UserRequestController@index'); // show all booking requests
     Route::post('storeRequest/{id}', 'UserRequestController@store'); // send & save booking request(auto fills auth user and needs recieving user id in URL)
     Route::get('showRequest/{id}', 'UserRequestController@show'); // show booking request by id
     Route::get('showRequestsByUser', 'UserRequestController@showRequestsByUser'); // show booking requests user made
     Route::get('showRequestedFromUser', 'UserRequestController@showRequestedFromUser'); // show bookings made to user
+    Route::get('showRequestedFromUserPending', 'UserRequestController@showRequestedFromUserPending'); // return accepted requests
     Route::get('showRequestedFromUserAccepted', 'UserRequestController@showRequestedFromUserAccepted'); // return accepted requests
     Route::get('showRequestedFromUserDeclined', 'UserRequestController@showRequestedFromUserDeclined'); // return declined requests
     Route::get('editRequest/{id}/edit', 'UserRequestController@edit'); // get edit booking request by id -- todo
-    Route::put('updateStatus/{id}', 'UserRequestController@updateStatus'); // update booking requests status (0=pending,1=accept,2=decline)
     Route::patch('acceptRequest/{id}', 'UserRequestController@acceptRequest'); // accept a booking request by its id
     Route::patch('declineRequest/{id}', 'UserRequestController@declineRequest'); // decline booking request by its id
     Route::get('showRequestsToAuth/{id}', 'UserRequestController@showRequestsToAuth');

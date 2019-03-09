@@ -535,6 +535,39 @@ class ApiController extends Controller
 
     /**
      *
+     *
+     * @param  \App\UserRequest  $userRequest
+     * @return \Illuminate\Http\Response
+     */
+    public function showRequestedUserToAuthDeclined()
+    {
+
+        try {
+          $userRequest = User::whereHas('UserRequests', function($q) {
+             $q->where('requestedUser_id', $id = JWTAuth::user()->id)->where('status', 2);
+          })->with('userDetails')->orderBy('id', 'desc')->get();
+
+          if ( is_null($userRequest) ) {
+            return response()->json([
+               'success' => true,
+               'message' => 'Sorry, you have no requests.'
+            ], 200);
+          }
+          return response()->json([
+             'success' => true,
+             'data' => $userRequest
+          ], 200);
+          }catch (JWTException $exception) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Sorry something went wrong',
+                'ErrorException' => $exception
+            ], 400);
+        }
+    }
+
+    /**
+     *
      * @return \Illuminate\Http\Response
      */
       public function showFavouritedUsers()

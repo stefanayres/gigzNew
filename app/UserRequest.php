@@ -20,7 +20,12 @@ class UserRequest extends Model
     {
         return $this->belongsTo('App\User', 'requestingUser_id');
     }
-    
+
+    public function user()
+    {
+        return $this->belongsTo('App\User', 'requestedUser_id');
+    }
+
     public function userDetails()
     {
        return $this->hasOne('App\userDetail');

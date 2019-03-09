@@ -160,14 +160,44 @@ public function __construct()
      * @param  \App\UserRequest  $userRequest
      * @return \Illuminate\Http\Response
      */
+    public function showRequestedFromUserPending()
+    {
+
+        try {
+            $user_id = JWTAuth::user()->id;
+
+            $userRequest = UserRequest::where('requestingUser_id', $user_id)
+            ->where('status', 0)
+            ->with('User')
+            ->get();
+
+            return response()->json([
+                'success' => true,
+                'data' => $userRequest
+            ]);
+        } catch (JWTException $exception) {
+          return response()->json([
+              'success' => false,
+              'message' => 'Sorry, no bookings set by you'
+          ], 400);
+        }
+    }
+
+    /**
+     *
+     *
+     * @param  \App\UserRequest  $userRequest
+     * @return \Illuminate\Http\Response
+     */
     public function showRequestedFromUserAccepted()
     {
 
         try {
             $user_id = JWTAuth::user()->id;
 
-            $userRequest = UserRequest::where('requestedUser_id', $user_id)
+            $userRequest = UserRequest::where('requestingUser_id', $user_id)
             ->where('status', 1)
+            ->with('User')
             ->get();
 
             return response()->json([
@@ -194,8 +224,9 @@ public function __construct()
         try {
             $user_id = JWTAuth::user()->id;
 
-            $userRequest = UserRequest::where('requestedUser_id', $user_id)
-            ->where('status', 0)
+            $userRequest = UserRequest::where('requestingUser_id', $user_id)
+            ->where('status', 2)
+            ->with('User')
             ->get();
 
             return response()->json([
@@ -260,24 +291,6 @@ public function __construct()
         ], 400);
     }
 }
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\UserRequest  $userRequest
-     * @return \Illuminate\Http\Response
-     */
-    public function updateStatus($id, Request $request) // user can update own status (0=pending, 1=accepted, 2=denined)
-    {                                                   // not used - use the accept or decline methods below
-      $userRequest = UserRequest::find($id);
-      $userRequest->fill($request->only(['status']));
-      $userRequest->save();
-
-      return response()->json([
-          'success' => true,
-          'data' => $userRequest
-      ], 200);
-    }
 
     /**
      * Update the specified resource in storage.
