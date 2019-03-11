@@ -10,7 +10,7 @@
     <body>
 
         <div id="app"></div>
-        hello world
+        !!!!!
         <script src="{{asset('js/app.js')}}" ></script>
 
 
