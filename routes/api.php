@@ -49,6 +49,8 @@ Route::get('showRequestedUserToAuthDeclined', 'ApiController@showRequestedUserTo
     Route::get('showRequestedFromUserPending', 'UserRequestController@showRequestedFromUserPending'); // return accepted requests
     Route::get('showRequestedFromUserAccepted', 'UserRequestController@showRequestedFromUserAccepted'); // return accepted requests
     Route::get('showRequestedFromUserDeclined', 'UserRequestController@showRequestedFromUserDeclined'); // return declined requests
+    Route::get('showPendingCount', 'UserRequestController@showRequestedPendingCount'); //return count of requests pending
+    Route::get('showAcceptedCount', 'UserRequestController@showRequestedAcceptedCount'); // return count of request accepted
     Route::get('editRequest/{id}/edit', 'UserRequestController@edit'); // get edit booking request by id -- todo
     Route::patch('acceptRequest/{id}', 'UserRequestController@acceptRequest'); // accept a booking request by its id
     Route::patch('declineRequest/{id}', 'UserRequestController@declineRequest'); // decline booking request by its id

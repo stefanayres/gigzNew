@@ -108,7 +108,6 @@ public function __construct()
      */
     public function showRequestsByUser()
     {
-
         try {
             $user_id = JWTAuth::user()->id;
             $userRequest = UserRequest::where('requestingUser_id', $user_id)
@@ -135,7 +134,6 @@ public function __construct()
      */
     public function showRequestedFromUser()
     {
-
         try {
             $user_id = JWTAuth::user()->id;
             $userRequest = UserRequest::where('requestedUser_id', $user_id)
@@ -162,18 +160,46 @@ public function __construct()
      */
     public function showRequestedFromUserPending()
     {
-
         try {
             $user_id = JWTAuth::user()->id;
-
             $userRequest = UserRequest::where('requestingUser_id', $user_id)
             ->where('status', 0)
             ->with('User')
             ->get();
+            $count = $userRequest->count();
 
             return response()->json([
                 'success' => true,
-                'data' => $userRequest
+                'data' => $userRequest,
+                'count' => $count
+            ]);
+        } catch (JWTException $exception) {
+          return response()->json([
+              'success' => false,
+              'message' => 'Sorry, no bookings set by you'
+          ], 400);
+        }
+    }
+
+    /**
+     *
+     *
+     * @param  \App\UserRequest  $userRequest
+     * @return \Illuminate\Http\Response
+     */
+    public function showRequestedPendingCount()
+    {
+        try {
+            $user_id = JWTAuth::user()->id;
+            $userRequest = UserRequest::where('requestingUser_id', $user_id)
+            ->where('status', 0)
+            ->with('User')
+            ->get();
+            $count = $userRequest->count();
+
+            return response()->json([
+                'success' => true,
+                'data' => $count
             ]);
         } catch (JWTException $exception) {
           return response()->json([
@@ -191,18 +217,46 @@ public function __construct()
      */
     public function showRequestedFromUserAccepted()
     {
-
         try {
             $user_id = JWTAuth::user()->id;
-
             $userRequest = UserRequest::where('requestingUser_id', $user_id)
             ->where('status', 1)
             ->with('User')
             ->get();
+            $count = $userRequest->count();
 
             return response()->json([
                 'success' => true,
-                'data' => $userRequest
+                'data' => $userRequest,
+                'count' => $count
+            ]);
+        } catch (JWTException $exception) {
+          return response()->json([
+              'success' => false,
+              'message' => 'Sorry, no bookings set by you'
+          ], 400);
+        }
+    }
+
+    /**
+     *
+     *
+     * @param  \App\UserRequest  $userRequest
+     * @return \Illuminate\Http\Response
+     */
+    public function showRequestedAcceptedCount()
+    {
+        try {
+            $user_id = JWTAuth::user()->id;
+            $userRequest = UserRequest::where('requestingUser_id', $user_id)
+            ->where('status', 1)
+            ->with('User')
+            ->get();
+            $count = $userRequest->count();
+
+            return response()->json([
+                'success' => true,
+                'data' => $count
             ]);
         } catch (JWTException $exception) {
           return response()->json([
@@ -228,10 +282,12 @@ public function __construct()
             ->where('status', 2)
             ->with('User')
             ->get();
+            $count = $userRequest->count();
 
             return response()->json([
                 'success' => true,
-                'data' => $userRequest
+                'data' => $userRequest,
+                'count' => $count
             ]);
         } catch (JWTException $exception) {
           return response()->json([
